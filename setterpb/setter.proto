@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package setter;
+
+option go_package = "github.com/octavore/protoc-gen-setter/setterpb";
+
+import "google/protobuf/descriptor.proto";
+
+message SetterFieldOptions {
+  bool include = 1;
+  bool exclude = 2;
+}
+
+extend google.protobuf.FileOptions {
+  bool setter_messages = 94070;
+}
+
+extend google.protobuf.MessageOptions {
+  bool all_fields = 94071;
+}
+
+extend google.protobuf.FieldOptions {
+  SetterFieldOptions field = 94073;
+}
+
+extend google.protobuf.OneofOptions {
+  SetterFieldOptions oneof_field = 94074;
+}
