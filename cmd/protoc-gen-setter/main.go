@@ -27,6 +27,7 @@ type Plugin struct {
 
 func (s *Plugin) Generate(gen *protogen.Plugin, file *protogen.File) {
 	g := &lazyFile{gen: gen, in: file}
+	isProto2 := file.Desc.Syntax() == protoreflect.Proto2
 	for _, msg := range file.Messages {
 		msgName := msg.GoIdent.GoName
 		setAllOpt, ok := proto.GetExtension(msg.Desc.Options(), setterpb.E_AllFields).(bool)
@@ -44,7 +45,7 @@ func (s *Plugin) Generate(gen *protogen.Plugin, file *protogen.File) {
 				}
 
 				oneofStructIdent := msgName + "_" + f.GoName
-				g.P("func (m *", msgName, ") Set", f.GoName, "(v ", goType(g, f, true), ") {")
+				g.P("func (m *", msgName, ") Set", f.GoName, "(v ", goType(g, f, false), ") {")
 				g.P("  m.", f.Oneof.GoName, " = &", oneofStructIdent, "{", f.GoName, ": v}")
 				g.P("}")
 				g.P()
@@ -59,7 +60,7 @@ func (s *Plugin) Generate(gen *protogen.Plugin, file *protogen.File) {
 					continue
 				}
 
-				g.P("func (m *", msgName, ") Set", f.GoName, "(v ", goType(g, f, true), ") {")
+				g.P("func (m *", msgName, ") Set", f.GoName, "(v ", goType(g, f, isProto2), ") {")
 				g.P("  m.", f.GoName, " = v")
 				g.P("}")
 				g.P()

@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package example.proto2;
+
+option go_package = "github.com/octavore/protoc-gen-setter/example/proto2";
+
+import "google/protobuf/descriptor.proto";
+import "setterpb/setter.proto";
+
+message Timestamp {
+    option (setter.all_fields) = true;
+    optional int64 created_at = 1;
+    optional int64 updated_at = 2;
+}
+
+message Page {
+    optional Timestamp timestamps = 1 [(setter.field).include = true];
+
+    oneof type {
+      option (setter.oneof_field).include = true;
+      string text = 11;
+      int64 number = 12;
+    }
+}
