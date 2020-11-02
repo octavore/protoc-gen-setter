@@ -2,15 +2,25 @@
 
 ## Usage
 
+### CLI
+
+```shell
+protoc example.proto --go_out=. --go_opt=paths=source_relative --setter_out
+```
+
+### Proto
+
+NB: You probably want to just copy the `setter.proto` file somewhere in your project and reference it there 🤷‍♂️.
+
 ```proto
 syntax = "proto3";
 
-package mypackage;
+package example.proto3;
 
-option go_package = "github.com/ketchuphq/ketchup/proto/modelspb";
+option go_package = "github.com/octavore/protoc-gen-setter/example/proto3";
 
 import "google/protobuf/descriptor.proto";
-import "vendor/setter.proto";
+import "setterpb/setter.proto";
 
 message Timestamp {
     option (setter.all_fields) = true;
@@ -23,9 +33,23 @@ message Page {
 
     oneof type {
       option (setter.oneof_field).include = true;
-      ContentString short = 11;
-      ContentText text = 12;
-      ContentMultiple multiple = 13;
+      string text = 11;
+      int64 number = 12;
     }
 }
 ```
+
+## Development
+
+```
+make prepare
+make test  # build example protos
+```
+
+## Credits
+
+Inspired by https://github.com/confluentinc/proto-go-setter but uses `google.golang.org/protobuf` exclusively instead of `gogo/protobuf`.
+
+## License
+
+MIT
